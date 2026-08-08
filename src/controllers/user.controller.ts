@@ -1,55 +1,77 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
 
-interface UserParams {
-  id: string;
-}
-
 export const getUsers = async (req: Request, res: Response) => {
-  const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      phone: true,
-      address: true,
-      role: true,
-      createdAt: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        role: true,
+        avatarUrl: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-  return res.json(users);
-};
+    return res.json(users);
+  } catch (error) {
+    console.error(error);
 
-export const getUserById = async (req: Request<UserParams>, res: Response) => {
-  const { id } = req.params;
-
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      phone: true,
-      address: true,
-      role: true,
-      createdAt: true,
-    },
-  });
-
-  if (!user) {
-    return res.status(404).json({ message: "Usuario no encontrado" });
+    return res.status(500).json({
+      message: "Error al obtener los usuarios",
+    });
   }
-
-  return res.json(user);
 };
 
-export const updateUser = async (req: Request<UserParams>, res: Response) => {
-  const { id } = req.params;
-  const { name, email, phone, address, role } = req.body;
+export const getUserById = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        role: true,
+        avatarUrl: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Usuario no encontrado",
+      });
+    }
+
+    return res.json(user);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Error al obtener el usuario",
+    });
+  }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+
+  console.log("========== UPDATE USER ==========");
+  console.log("ID:", id);
+  console.log("BODY COMPLETO:", req.body);
+  console.log("AVATAR URL RECIBIDA:", req.body.avatarUrl);
+
+  const { name, email, phone, address, role, avatarUrl } = req.body;
 
   try {
     const user = await prisma.user.update({
@@ -60,19 +82,36 @@ export const updateUser = async (req: Request<UserParams>, res: Response) => {
         phone,
         address,
         role,
+        avatarUrl,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        role: true,
+        avatarUrl: true,
+        createdAt: true,
       },
     });
 
+    console.log("========== USUARIO ACTUALIZADO ==========");
+    console.log(user);
+
     return res.json(user);
-  } catch {
-    return res.status(404).json({
-      message: "Usuario no encontrado",
+  } catch (error) {
+    console.error("========== ERROR UPDATE ==========");
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Error al actualizar el usuario",
     });
   }
 };
 
-export const deleteUser = async (req: Request<UserParams>, res: Response) => {
-  const { id } = req.params;
+export const deleteUser = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
 
   try {
     await prisma.user.delete({
@@ -82,7 +121,9 @@ export const deleteUser = async (req: Request<UserParams>, res: Response) => {
     return res.json({
       message: "Usuario eliminado correctamente",
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return res.status(404).json({
       message: "Usuario no encontrado",
     });
