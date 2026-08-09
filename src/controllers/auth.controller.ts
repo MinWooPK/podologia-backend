@@ -101,6 +101,7 @@ export const login = async (req: Request, res: Response) => {
       phone: user.phone,
       address: user.address,
       role: user.role,
+      avatarUrl: user.avatarUrl,
     },
   });
 };

@@ -66,11 +66,6 @@ export const getUserById = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   const id = req.params.id as string;
 
-  console.log("========== UPDATE USER ==========");
-  console.log("ID:", id);
-  console.log("BODY COMPLETO:", req.body);
-  console.log("AVATAR URL RECIBIDA:", req.body.avatarUrl);
-
   const { name, email, phone, address, role, avatarUrl } = req.body;
 
   try {
@@ -96,14 +91,8 @@ export const updateUser = async (req: Request, res: Response) => {
       },
     });
 
-    console.log("========== USUARIO ACTUALIZADO ==========");
-    console.log(user);
-
     return res.json(user);
   } catch (error) {
-    console.error("========== ERROR UPDATE ==========");
-    console.error(error);
-
     return res.status(500).json({
       message: "Error al actualizar el usuario",
     });
