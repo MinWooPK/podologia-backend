@@ -19,6 +19,18 @@ model User {
   createdAt DateTime @default(now())
 }
 
+model Shop {
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String?
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  imageUrl    String?
+  inStock     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 enum Role {
   ADMIN
   CLIENT
