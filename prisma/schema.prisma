@@ -31,6 +31,26 @@ model Shop {
   updatedAt   DateTime @updatedAt
 }
 
+model Patient {
+  id        String   @id @default(cuid())
+
+  name      String
+  surname   String
+
+  dni       String   @unique
+
+  email     String?
+  phone     String?
+
+  birthDate DateTime?
+  address   String?
+
+  active    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 enum Role {
   ADMIN
   CLIENT
