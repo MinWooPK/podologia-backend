@@ -25,7 +25,7 @@ export const getPatients = async (req: Request, res: Response) => {
 // GET /api/patients/:id
 export const getPatientById = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const patient = await prisma.patient.findUnique({
       where: {
@@ -97,7 +97,7 @@ export const createPatient = async (req: Request, res: Response) => {
 // PUT /api/patients/:id
 export const updatePatient = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     const { name, surname, dni, email, phone, birthDate, address, active } =
       req.body;
@@ -131,7 +131,7 @@ export const updatePatient = async (req: Request, res: Response) => {
 // DELETE /api/patients/:id
 export const deletePatient = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
 
     await prisma.patient.delete({
       where: {
