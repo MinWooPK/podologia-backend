@@ -76,7 +76,7 @@ export const getRecentAppointmentsByDate = async (
         id: true,
         startTime: true,
         service: true,
-        isPending: true,
+        pending: true,
 
         patient: {
           select: {
@@ -93,7 +93,19 @@ export const getRecentAppointmentsByDate = async (
       take: 4,
     });
 
-    return res.json(appointments);
+    const formattedAppointments = appointments.map((appointment) => ({
+      id: appointment.id,
+      startTime: appointment.startTime,
+      service: appointment.service,
+      isPending: appointment.pending,
+
+      patient: {
+        name: appointment.patient.name,
+        surname: appointment.patient.surname,
+      },
+    }));
+
+    return res.json(formattedAppointments);
   } catch (error) {
     console.error("Error al obtener las citas de la fecha:", error);
 
