@@ -65,6 +65,8 @@ model Appointment {
 
   note String?
 
+  pending Boolean @default(true)
+
   patientId String
   patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
