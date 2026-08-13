@@ -26,6 +26,5 @@ router.put("/:id", updateAppointment);
 // Eliminar una cita
 router.delete("/:id", deleteAppointment);
 
-router.get("/recent/:date", getRecentAppointmentsByDate);
-
+router.get("/date/:date/recent", getRecentAppointmentsByDate);
 export default router;
