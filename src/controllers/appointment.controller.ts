@@ -58,19 +58,10 @@ export const getRecentAppointmentsByDate = async (
   req: Request,
   res: Response,
 ) => {
-  const { date } = req.params;
+  const date = req.params.date as string;
 
   try {
-    if (!date) {
-      return res.status(400).json({
-        message: "La fecha es obligatoria",
-      });
-    }
-
-    // Inicio del día
-    const startOfDay = new Date(`${date}T00:00:00`);
-
-    // Inicio del día siguiente
+    const startOfDay = new Date(`${date}T00:00:00.000`);
     const endOfDay = new Date(`${date}T23:59:59.999`);
 
     const appointments = await prisma.appointment.findMany({
@@ -96,7 +87,7 @@ export const getRecentAppointmentsByDate = async (
       },
 
       orderBy: {
-        startTime: "desc",
+        startTime: "asc",
       },
 
       take: 4,
@@ -104,7 +95,7 @@ export const getRecentAppointmentsByDate = async (
 
     return res.json(appointments);
   } catch (error) {
-    console.error("Error al obtener las últimas citas de la fecha:", error);
+    console.error("Error al obtener las citas de la fecha:", error);
 
     return res.status(500).json({
       message: "Error al obtener las citas",
