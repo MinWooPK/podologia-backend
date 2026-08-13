@@ -50,7 +50,67 @@ export const getAppointments = async (req: Request, res: Response) => {
     });
   }
 };
+// ==============================
+// OBTENER LAS ÚLTIMAS 4 CITAS DE UNA FECHA
+// ==============================
 
+export const getRecentAppointmentsByDate = async (
+  req: Request,
+  res: Response,
+) => {
+  const { date } = req.params;
+
+  try {
+    if (!date) {
+      return res.status(400).json({
+        message: "La fecha es obligatoria",
+      });
+    }
+
+    // Inicio del día
+    const startOfDay = new Date(`${date}T00:00:00`);
+
+    // Inicio del día siguiente
+    const endOfDay = new Date(`${date}T23:59:59.999`);
+
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        date: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+
+      select: {
+        id: true,
+        startTime: true,
+        service: true,
+        isPending: true,
+
+        patient: {
+          select: {
+            name: true,
+            surname: true,
+          },
+        },
+      },
+
+      orderBy: {
+        startTime: "desc",
+      },
+
+      take: 4,
+    });
+
+    return res.json(appointments);
+  } catch (error) {
+    console.error("Error al obtener las últimas citas de la fecha:", error);
+
+    return res.status(500).json({
+      message: "Error al obtener las citas",
+    });
+  }
+};
 // ==============================
 // OBTENER CITA POR ID
 // ==============================

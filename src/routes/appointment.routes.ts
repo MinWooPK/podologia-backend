@@ -6,6 +6,7 @@ import {
   createAppointment,
   updateAppointment,
   deleteAppointment,
+  getRecentAppointmentsByDate,
 } from "../controllers/appointment.controller";
 
 const router = Router();
@@ -24,5 +25,7 @@ router.put("/:id", updateAppointment);
 
 // Eliminar una cita
 router.delete("/:id", deleteAppointment);
+
+router.get("/date/:date/recent", getRecentAppointmentsByDate);
 
 export default router;
